@@ -44,6 +44,11 @@
   body {
     @apply bg-bg text-fg;
     font-family: var(--font-body);
+    background-image:
+      linear-gradient(to right, var(--border) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--border) 1px, transparent 1px);
+    background-size: 40px 40px;
+    background-attachment: fixed;
   }
   ::selection {
     background: var(--amber);
@@ -75,6 +80,31 @@
 
 .text-glow {
   text-shadow: 0 0 24px rgba(240, 180, 41, 0.25);
+}
+
+.hero-glow {
+  position: relative;
+}
+.hero-glow::before {
+  content: '';
+  position: absolute;
+  top: -20%;
+  left: 50%;
+  width: 120%;
+  height: 140%;
+  transform: translateX(-50%);
+  background: radial-gradient(
+    ellipse 50% 40% at 30% 0%,
+    rgba(240, 180, 41, 0.14),
+    transparent 60%
+  ),
+  radial-gradient(
+    ellipse 45% 35% at 80% 20%,
+    rgba(79, 209, 197, 0.1),
+    transparent 60%
+  );
+  pointer-events: none;
+  z-index: 0;
 }
 
 @keyframes caret-blink {

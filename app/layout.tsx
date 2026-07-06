@@ -22,11 +22,32 @@ const jetbrainsMono = JetBrains_Mono({
   display: 'swap',
 })
 
+const SITE_URL = 'https://luuminhduc.dev'
+const TITLE = 'Luu Minh Duc — Fullstack Developer'
+const DESCRIPTION =
+  'Fullstack developer skilled in MERN and Next.js, with real-world experience building Shopify apps live on the App Store.'
+
 export const metadata: Metadata = {
-  title: 'Luu Minh Duc — Fullstack Developer',
-  description:
-    'Fullstack developer skilled in MERN and Next.js, with real-world experience building Shopify apps.',
-  generator: 'v0.app',
+  metadataBase: new URL(SITE_URL),
+  title: TITLE,
+  description: DESCRIPTION,
+  alternates: { canonical: '/' },
+  robots: { index: true, follow: true },
+  openGraph: {
+    type: 'profile',
+    url: SITE_URL,
+    title: TITLE,
+    description: DESCRIPTION,
+    siteName: 'Luu Minh Duc',
+    locale: 'en_US',
+    images: [{ url: '/luu-minh-duc.jpg', width: 800, height: 1000, alt: 'Luu Minh Duc' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: TITLE,
+    description: DESCRIPTION,
+    images: ['/luu-minh-duc.jpg'],
+  },
 }
 
 export const viewport: Viewport = {
