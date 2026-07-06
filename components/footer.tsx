@@ -8,7 +8,7 @@ export default function Footer() {
           <p className="text-sm md:text-base">
             &copy; {currentYear} Portfolio. All rights reserved.
           </p>
-          
+
           <div className="flex gap-8 text-sm">
             <a href="#" className="hover:text-accent transition-colors">Privacy Policy</a>
             <a href="#" className="hover:text-accent transition-colors">Terms of Service</a>
