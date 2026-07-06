@@ -2,19 +2,13 @@ export default function Footer() {
   const currentYear = new Date().getFullYear()
 
   return (
-    <footer className="py-8 px-6 bg-primary text-white border-t border-border">
-      <div className="max-w-6xl mx-auto">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-          <p className="text-sm md:text-base">
-            &copy; {currentYear} Portfolio. All rights reserved.
-          </p>
-
-          <div className="flex gap-8 text-sm">
-            <a href="#" className="hover:text-accent transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-accent transition-colors">Terms of Service</a>
-            <a href="#" className="hover:text-accent transition-colors">Sitemap</a>
-          </div>
-        </div>
+    <footer className="py-8 px-6 bg-bg border-t border-border">
+      <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 font-mono text-xs text-fg-dim">
+        <p>&copy; {currentYear} Luu Minh Duc. Built with Next.js.</p>
+        <p className="flex items-center gap-2">
+          <span className="w-1.5 h-1.5 rounded-full bg-teal" />
+          available for work
+        </p>
       </div>
     </footer>
   )

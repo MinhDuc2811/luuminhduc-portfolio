@@ -24,6 +24,11 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
+## Analytics setup
+
+- **Vercel Analytics**: works automatically once deployed on Vercel — no config needed. Custom events (CV downloads, contact clicks, project link clicks, terminal commands) are already wired via `lib/analytics.ts` and show up under the "Events" tab in the Vercel dashboard.
+- **Microsoft Clarity** (session replay + heatmaps, free): sign up at [clarity.microsoft.com](https://clarity.microsoft.com), create a project for this site, copy its Project ID, then set `NEXT_PUBLIC_CLARITY_PROJECT_ID` in your Vercel project's Environment Variables. It only loads when that variable is set, and only in production.
+
 ## Learn More
 
 To learn more, take a look at the following resources:

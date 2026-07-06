@@ -1,129 +1,89 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { trackEvent } from '@/lib/analytics'
+
+// split so plain-HTML scrapers can't harvest a literal email/phone string
+const EMAIL_PARTS = ['luuminhduc2811', 'gmail.com']
+const PHONE_PARTS = ['0395', '947', '096']
+
+function useReveal() {
+  const [ready, setReady] = useState(false)
+  useEffect(() => setReady(true), [])
+  return ready
+}
 
 export default function Contact() {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: ''
-  })
-  const [submitted, setSubmitted] = useState(false)
+  const ready = useReveal()
+  const email = EMAIL_PARTS.join('@')
+  const phoneDisplay = PHONE_PARTS.join(' ')
+  const phoneHref = '+84' + PHONE_PARTS.join('').slice(1)
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    // Handle form submission here
-    console.log('Form submitted:', formData)
-    setSubmitted(true)
-    setTimeout(() => {
-      setFormData({ name: '', email: '', message: '' })
-      setSubmitted(false)
-    }, 3000)
-  }
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }))
-  }
+  const CONTACT_LINES = [
+    { key: 'email', value: ready ? email : 'loading…', href: ready ? `mailto:${email}` : undefined },
+    { key: 'phone', value: ready ? phoneDisplay : 'loading…', href: ready ? `tel:${phoneHref}` : undefined },
+    { key: 'location', value: 'Phu Tho, Vietnam' },
+    {
+      key: 'facebook',
+      value: 'facebook.com/luu.minh.duc',
+      href: 'https://www.facebook.com/profile.php?id=100013069661742',
+    },
+  ]
 
   return (
-    <section id="contact" className="py-20 md:py-32 px-6 bg-accent">
+    <section id="contact" className="py-20 md:py-28 px-6 bg-bg-raised border-t border-border">
       <div className="max-w-4xl mx-auto">
-        <div className="space-y-12">
-          <div className="space-y-4">
-            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground">
-              Let&apos;s work together
-            </h2>
-            <p className="text-lg md:text-xl text-secondary max-w-2xl">
-              Have a project in mind? I&apos;d love to hear about it. Get in touch and let&apos;s create something amazing.
-            </p>
-          </div>
+        <div className="mb-10 font-mono text-sm text-fg-dim">
+          <span className="text-teal">$</span> cat contact.md
+        </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label htmlFor="name" className="block text-sm font-medium text-foreground">
-                  Name
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-colors"
-                  placeholder="Your name"
-                />
-              </div>
+        <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-fg mb-4 text-balance" style={{ fontFamily: 'var(--font-display)' }}>
+          Let&apos;s build something together.
+        </h2>
+        <p className="text-fg-muted text-lg mb-10 max-w-2xl leading-relaxed">
+          Open to fullstack roles and freelance projects. Reach out and I&apos;ll get back to you fast.
+        </p>
 
-              <div className="space-y-2">
-                <label htmlFor="email" className="block text-sm font-medium text-foreground">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-colors"
-                  placeholder="you@example.com"
-                />
-              </div>
+        <div className="rounded-lg border border-border bg-bg divide-y divide-border font-mono text-sm">
+          {CONTACT_LINES.map((line) => (
+            <div key={line.key} className="flex items-center justify-between px-5 py-4">
+              <span className="text-fg-dim">{line.key}:</span>
+              {line.href ? (
+                <a
+                  href={line.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => trackEvent('contact_link_click', { channel: line.key })}
+                  className="text-fg hover:text-amber transition-colors"
+                >
+                  {line.value}
+                </a>
+              ) : (
+                <span className="text-fg">{line.value}</span>
+              )}
             </div>
+          ))}
+        </div>
 
-            <div className="space-y-2">
-              <label htmlFor="message" className="block text-sm font-medium text-foreground">
-                Message
-              </label>
-              <textarea
-                id="message"
-                name="message"
-                value={formData.message}
-                onChange={handleChange}
-                required
-                rows={6}
-                className="w-full px-4 py-3 bg-background border border-border rounded-lg text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary resize-none transition-colors"
-                placeholder="Tell me about your project..."
-              />
-            </div>
-
-            <div>
-              <button
-                type="submit"
-                className="px-8 py-3 bg-primary text-white font-medium rounded-lg hover:bg-secondary transition-colors"
-              >
-                {submitted ? 'Message sent!' : 'Send message'}
-              </button>
-            </div>
-          </form>
-
-          <div className="grid md:grid-cols-3 gap-8 pt-8 border-t border-border">
-            <div>
-              <p className="text-sm font-medium text-secondary mb-2">Email</p>
-              <a href="mailto:hello@example.com" className="text-foreground hover:text-secondary transition-colors">
-                hello@example.com
-              </a>
-            </div>
-            <div>
-              <p className="text-sm font-medium text-secondary mb-2">Phone</p>
-              <a href="tel:+1234567890" className="text-foreground hover:text-secondary transition-colors">
-                +1 (234) 567-890
-              </a>
-            </div>
-            <div>
-              <p className="text-sm font-medium text-secondary mb-2">Social</p>
-              <div className="flex gap-4">
-                <a href="#" className="text-foreground hover:text-secondary transition-colors">Twitter</a>
-                <a href="#" className="text-foreground hover:text-secondary transition-colors">LinkedIn</a>
-              </div>
-            </div>
-          </div>
+        <div className="mt-10 flex flex-wrap gap-4">
+          <button
+            type="button"
+            onClick={() => {
+              trackEvent('contact_email_click', { location: 'contact_section' })
+              if (ready) window.location.href = `mailto:${email}`
+            }}
+            className="inline-flex items-center gap-2 px-6 py-3 bg-amber text-bg font-mono text-sm font-medium rounded-md hover:bg-amber/90 transition-colors"
+          >
+            send an email →
+          </button>
+          <a
+            href="/cv-luu-minh-duc.pdf"
+            download
+            onClick={() => trackEvent('cv_download', { location: 'contact_section' })}
+            className="inline-flex items-center gap-2 px-6 py-3 border border-border text-fg font-mono text-sm font-medium rounded-md hover:border-teal hover:text-teal transition-colors"
+          >
+            ↓ download cv.pdf
+          </a>
         </div>
       </div>
     </section>
