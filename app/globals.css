@@ -61,9 +61,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  *:not(.character-run),
+  *:not(.character-run)::before,
+  *:not(.character-run)::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
@@ -80,6 +80,16 @@
 
 .text-glow {
   text-shadow: 0 0 24px rgba(240, 180, 41, 0.25);
+}
+
+.legible-on-photo {
+  text-shadow:
+    -1.5px -1.5px 0 rgba(0, 0, 0, 0.9),
+    1.5px -1.5px 0 rgba(0, 0, 0, 0.9),
+    -1.5px 1.5px 0 rgba(0, 0, 0, 0.9),
+    1.5px 1.5px 0 rgba(0, 0, 0, 0.9),
+    0 0 6px rgba(0, 0, 0, 0.9),
+    0 2px 10px rgba(0, 0, 0, 0.6);
 }
 
 .hero-glow {
@@ -133,4 +143,30 @@
 }
 .animate-fade-up {
   animation: fade-up 0.6s ease-out both;
+}
+
+@keyframes character-run-frames {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: -768px 0;
+  }
+}
+@keyframes character-run-across {
+  from {
+    left: -96px;
+  }
+  to {
+    left: 100%;
+  }
+}
+.character-run {
+  animation:
+    character-run-frames 0.64s steps(8) infinite,
+    character-run-across 6s linear infinite;
+}
+.character-run-upright {
+  transform: rotate(-25deg);
+  transform-origin: bottom center;
 }
