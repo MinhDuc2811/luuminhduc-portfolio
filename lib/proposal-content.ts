@@ -39,7 +39,7 @@ export const proposalContent = {
       ],
     },
     s2: {
-      num: '02',
+      num: '03',
       cmd: '$ cat context.md',
       title: 'Bối cảnh & nhu cầu',
       intro: 'Một đội sản phẩm hiệu quả cần developer có thể nhận một yêu cầu và đưa nó đến production — không dừng lại ở ranh giới frontend/backend, và không cần bàn giao qua nhiều người.',
@@ -50,7 +50,7 @@ export const proposalContent = {
       ],
     },
     s3: {
-      num: '03',
+      num: '04',
       cmd: '$ cat solution.md',
       title: 'Giải pháp đề xuất',
       intro: 'Một fullstack developer đã quen làm việc trong sản phẩm thương mại thực tế, đảm nhận trọn vẹn ba lớp công việc:',
@@ -61,7 +61,7 @@ export const proposalContent = {
       ],
     },
     s4: {
-      num: '04',
+      num: '05',
       cmd: '$ ls -la ./scope',
       title: 'Phạm vi công việc có thể đảm nhận',
       rows: [
@@ -74,7 +74,7 @@ export const proposalContent = {
       ],
     },
     s5: {
-      num: '05',
+      num: '06',
       cmd: '$ git log --reverse --since="day 0" --until="day 90"',
       title: 'Lộ trình 90 ngày đầu',
       items: [
@@ -84,14 +84,23 @@ export const proposalContent = {
       ],
     },
     s6: {
-      num: '06',
+      num: '02',
       cmd: '$ ls -la ./case-studies',
       title: 'Dự án tiêu biểu',
       shopify: {
         title: 'Shopify Apps — BSS Commerce',
         year: '2026',
         role: 'App Developer · NestJS + Remix/Polaris + Lit',
-        body: 'Phát triển tính năng full-stack cho hai app "Built for Shopify" đang chạy trên App Store — UI biến thể/tuỳ chọn sản phẩm trên storefront, CMS quản trị với live preview, đa ngôn ngữ, import/export hàng loạt, và xử lý bug báo từ merchant từ chẩn đoán đến bản vá.',
+        highlights: [
+          {
+            label: 'Phát triển app',
+            body: 'Xây dựng tính năng cho hai app "Built for Shopify" đang chạy trên App Store — từ giao diện khách mua hàng nhìn thấy khi chọn biến thể/tuỳ chọn sản phẩm, đến trang quản trị merchant dùng để cấu hình, xem trước thay đổi ngay lập tức, và import/export dữ liệu số lượng lớn.',
+          },
+          {
+            label: 'Chăm sóc khách hàng',
+            body: 'Trực tiếp xử lý các trường hợp merchant báo lỗi khi dùng app trên store thật của họ — tái hiện lỗi trong đúng cấu hình/theme của từng merchant, xác định nguyên nhân, sửa code, và theo đến khi merchant xác nhận đã dùng được bình thường.',
+          },
+        ],
       },
       projects: [
         {
@@ -166,7 +175,7 @@ export const proposalContent = {
       ],
     },
     s2: {
-      num: '02',
+      num: '03',
       cmd: '$ cat context.md',
       title: 'Context & Need',
       intro: 'An effective product team needs a developer who can take a requirement all the way to production — not stop at the frontend/backend boundary, and not require a handoff through several people.',
@@ -177,7 +186,7 @@ export const proposalContent = {
       ],
     },
     s3: {
-      num: '03',
+      num: '04',
       cmd: '$ cat solution.md',
       title: 'Proposed Solution',
       intro: 'A fullstack developer already comfortable in real commercial products, covering three layers of work end to end:',
@@ -188,7 +197,7 @@ export const proposalContent = {
       ],
     },
     s4: {
-      num: '04',
+      num: '05',
       cmd: '$ ls -la ./scope',
       title: 'Scope of Work I Can Own',
       rows: [
@@ -201,7 +210,7 @@ export const proposalContent = {
       ],
     },
     s5: {
-      num: '05',
+      num: '06',
       cmd: '$ git log --reverse --since="day 0" --until="day 90"',
       title: 'First 90 Days',
       items: [
@@ -211,14 +220,23 @@ export const proposalContent = {
       ],
     },
     s6: {
-      num: '06',
+      num: '02',
       cmd: '$ ls -la ./case-studies',
       title: 'Featured Work',
       shopify: {
         title: 'Shopify Apps — BSS Commerce',
         year: '2026',
         role: 'App Developer · NestJS + Remix/Polaris + Lit',
-        body: 'Shipped full-stack features for two "Built for Shopify" apps live on the App Store — storefront variant/option UI, an admin CMS with live preview, multi-language support, bulk import/export, and merchant-reported bug fixes from diagnosis to patch.',
+        highlights: [
+          {
+            label: 'Building the app',
+            body: 'Built features for two "Built for Shopify" apps live on the App Store — from what shoppers see when picking product variants/options, to the admin dashboard merchants use to configure it, preview changes instantly, and bulk import/export data.',
+          },
+          {
+            label: 'Customer support',
+            body: "Handled merchant-reported issues directly on their live stores — reproducing the bug in their exact theme/setup, finding the root cause, shipping a fix, and following up until the merchant confirmed it was resolved.",
+          },
+        ],
       },
       projects: [
         {

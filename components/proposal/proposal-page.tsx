@@ -111,7 +111,7 @@ export default function ProposalPage() {
         locale={locale}
         onLocaleChange={changeLocale}
         navLabel={t.nav.home}
-        navTitles={[t.s1.title, t.s2.title, t.s3.title, t.s4.title, t.s5.title, t.s6.title, t.s7.title]}
+        navTitles={[t.s1.title, t.s6.title, t.s2.title, t.s3.title, t.s4.title, t.s5.title, t.s7.title]}
         activeSlide={activeSlide}
         onNavigate={goTo}
       />
@@ -213,70 +213,8 @@ export default function ProposalPage() {
         </Section>
       </Slide>
 
-      {/* 02 — Context */}
+      {/* 02 — Case studies */}
       <Slide active={activeSlide === 2}>
-        <Section num={t.s2.num} cmd={t.s2.cmd} title={t.s2.title} alt>
-          <p className="text-white text-sm leading-snug max-w-2xl mb-4 legible-on-photo">{t.s2.intro}</p>
-          <div className="grid md:grid-cols-3 gap-3">
-            {t.s2.items.map((item) => (
-              <div key={item.num} className="rounded-lg border border-border bg-bg p-4 transition-colors hover:border-amber/50">
-                <p className="font-mono text-xs text-amber mb-1.5">{item.num} · {item.title}</p>
-                <p className="text-fg-muted text-sm leading-snug">{item.body}</p>
-              </div>
-            ))}
-          </div>
-        </Section>
-      </Slide>
-
-      {/* 03 — Solution */}
-      <Slide active={activeSlide === 3}>
-        <Section num={t.s3.num} cmd={t.s3.cmd} title={t.s3.title}>
-          <p className="text-white text-sm leading-snug max-w-2xl mb-4 legible-on-photo">{t.s3.intro}</p>
-          <div className="grid md:grid-cols-3 gap-3">
-            {t.s3.items.map((item) => (
-              <div key={item.title} className="rounded-lg border border-border bg-bg-raised p-4 transition-colors hover:border-teal/50">
-                <p className="font-mono text-xs text-teal mb-1.5">{item.tag}</p>
-                <p className="font-bold text-fg text-sm mb-1.5" style={{ fontFamily: 'var(--font-display)' }}>{item.title}</p>
-                <p className="text-fg-muted text-sm leading-snug">{item.body}</p>
-              </div>
-            ))}
-          </div>
-        </Section>
-      </Slide>
-
-      {/* 04 — Scope */}
-      <Slide active={activeSlide === 4}>
-        <Section num={t.s4.num} cmd={t.s4.cmd} title={t.s4.title} alt>
-          <div className="rounded-lg border border-border bg-bg divide-y divide-border">
-            {t.s4.rows.map((row) => (
-              <div key={row.label} className="grid sm:grid-cols-[140px_1fr] gap-1.5 sm:gap-4 px-4 py-2.5 transition-colors hover:bg-bg-raised/60">
-                <p className="font-mono text-xs text-teal shrink-0">{row.label}</p>
-                <p className="text-fg-muted text-sm leading-snug">{row.body}</p>
-              </div>
-            ))}
-          </div>
-        </Section>
-      </Slide>
-
-      {/* 05 — Roadmap */}
-      <Slide active={activeSlide === 5}>
-        <Section num={t.s5.num} cmd={t.s5.cmd} title={t.s5.title}>
-          <div className="space-y-3">
-            {t.s5.items.map((item) => (
-              <div key={item.range} className="rounded-lg border border-border bg-bg p-4 pl-6 relative transition-colors hover:border-amber/50">
-                <div className="absolute left-4 top-0 bottom-0 w-px bg-border" />
-                <div className="absolute left-[13px] top-5 w-2 h-2 rounded-full bg-amber" />
-                <p className="font-mono text-xs text-teal mb-1">{item.range}</p>
-                <p className="font-bold text-fg text-sm mb-1" style={{ fontFamily: 'var(--font-display)' }}>{item.title}</p>
-                <p className="text-fg-muted text-sm leading-snug">{item.body}</p>
-              </div>
-            ))}
-          </div>
-        </Section>
-      </Slide>
-
-      {/* 06 — Case studies */}
-      <Slide active={activeSlide === 6}>
         <Section num={t.s6.num} cmd={t.s6.cmd} title={t.s6.title} alt>
           <div className="rounded-lg border border-border bg-bg overflow-hidden mb-3">
             <div className="px-4 py-2.5 border-b border-border flex flex-wrap items-center justify-between gap-2">
@@ -285,7 +223,16 @@ export default function ProposalPage() {
             </div>
             <div className="p-4 space-y-1.5">
               <p className="font-mono text-xs text-teal">{t.s6.shopify.role}</p>
-              <p className="text-fg-muted text-sm leading-snug">{t.s6.shopify.body}</p>
+              <ul className="space-y-2">
+                {t.s6.shopify.highlights.map((h) => (
+                  <li key={h.label} className="flex items-start gap-2">
+                    <span className="text-amber shrink-0 leading-snug">▸</span>
+                    <p className="text-fg-muted text-sm leading-snug">
+                      <span className="text-fg font-medium">{h.label}:</span> {h.body}
+                    </p>
+                  </li>
+                ))}
+              </ul>
               <div className="flex flex-wrap gap-2 pt-1">
                 <a href="https://apps.shopify.com/product-options-by-bss" target="_blank" rel="noopener noreferrer" onClick={() => trackEvent('shopify_app_click', { app: 'OPTIS Product Options', location: 'proposal' })} className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md border border-border bg-bg-raised hover:border-teal transition-colors">
                   <Image src="/apps/optis-options-icon.png" alt="" width={16} height={16} className="rounded shrink-0" />
@@ -348,6 +295,68 @@ export default function ProposalPage() {
                     </a>
                   </div>
                 </div>
+              </div>
+            ))}
+          </div>
+        </Section>
+      </Slide>
+
+      {/* 03 — Context */}
+      <Slide active={activeSlide === 3}>
+        <Section num={t.s2.num} cmd={t.s2.cmd} title={t.s2.title}>
+          <p className="text-white text-sm leading-snug max-w-2xl mb-4 legible-on-photo">{t.s2.intro}</p>
+          <div className="grid md:grid-cols-3 gap-3">
+            {t.s2.items.map((item) => (
+              <div key={item.num} className="rounded-lg border border-border bg-bg p-4 transition-colors hover:border-amber/50">
+                <p className="font-mono text-xs text-amber mb-1.5">{item.num} · {item.title}</p>
+                <p className="text-fg-muted text-sm leading-snug">{item.body}</p>
+              </div>
+            ))}
+          </div>
+        </Section>
+      </Slide>
+
+      {/* 04 — Solution */}
+      <Slide active={activeSlide === 4}>
+        <Section num={t.s3.num} cmd={t.s3.cmd} title={t.s3.title} alt>
+          <p className="text-white text-sm leading-snug max-w-2xl mb-4 legible-on-photo">{t.s3.intro}</p>
+          <div className="grid md:grid-cols-3 gap-3">
+            {t.s3.items.map((item) => (
+              <div key={item.title} className="rounded-lg border border-border bg-bg-raised p-4 transition-colors hover:border-teal/50">
+                <p className="font-mono text-xs text-teal mb-1.5">{item.tag}</p>
+                <p className="font-bold text-fg text-sm mb-1.5" style={{ fontFamily: 'var(--font-display)' }}>{item.title}</p>
+                <p className="text-fg-muted text-sm leading-snug">{item.body}</p>
+              </div>
+            ))}
+          </div>
+        </Section>
+      </Slide>
+
+      {/* 05 — Scope */}
+      <Slide active={activeSlide === 5}>
+        <Section num={t.s4.num} cmd={t.s4.cmd} title={t.s4.title}>
+          <div className="rounded-lg border border-border bg-bg divide-y divide-border">
+            {t.s4.rows.map((row) => (
+              <div key={row.label} className="grid sm:grid-cols-[140px_1fr] gap-1.5 sm:gap-4 px-4 py-2.5 transition-colors hover:bg-bg-raised/60">
+                <p className="font-mono text-xs text-teal shrink-0">{row.label}</p>
+                <p className="text-fg-muted text-sm leading-snug">{row.body}</p>
+              </div>
+            ))}
+          </div>
+        </Section>
+      </Slide>
+
+      {/* 06 — Roadmap */}
+      <Slide active={activeSlide === 6}>
+        <Section num={t.s5.num} cmd={t.s5.cmd} title={t.s5.title} alt>
+          <div className="space-y-3">
+            {t.s5.items.map((item) => (
+              <div key={item.range} className="rounded-lg border border-border bg-bg p-4 pl-6 relative transition-colors hover:border-amber/50">
+                <div className="absolute left-4 top-0 bottom-0 w-px bg-border" />
+                <div className="absolute left-[13px] top-5 w-2 h-2 rounded-full bg-amber" />
+                <p className="font-mono text-xs text-teal mb-1">{item.range}</p>
+                <p className="font-bold text-fg text-sm mb-1" style={{ fontFamily: 'var(--font-display)' }}>{item.title}</p>
+                <p className="text-fg-muted text-sm leading-snug">{item.body}</p>
               </div>
             ))}
           </div>
