@@ -28,3 +28,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+# Keep only the environment template and encrypted CV in source control.
+!.env.example
+/private-assets/*.pdf

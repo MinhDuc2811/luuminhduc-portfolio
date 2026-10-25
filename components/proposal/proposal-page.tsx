@@ -1,13 +1,16 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import ProposalHeader from './proposal-header'
 import HeroScene from '@/components/hero-scene'
+import CvAccess from '@/components/cv-access'
+import { useSlideNavigation } from '@/hooks/use-slide-navigation'
 import { proposalContent, type Locale } from '@/lib/proposal-content'
 import { trackEvent } from '@/lib/analytics'
-import { PROJECTS } from '@/lib/work-data'
+import StoryGuide from '@/components/story-guide'
+import ProjectShowcase from '@/components/project-showcase'
 
 const EMAIL_PARTS = ['luuminhduc2811', 'gmail.com']
 const PHONE_PARTS = ['0395', '947', '096']
@@ -16,11 +19,10 @@ const SLIDE_COUNT = 8 // hero + s1..s7
 export default function ProposalPage() {
   const [locale, setLocale] = useState<Locale>('en')
   const [ready, setReady] = useState(false)
-  const [activeSlide, setActiveSlide] = useState(0)
+  const [cvOpen, setCvOpen] = useState(false)
+  const { activeSlide, goTo } = useSlideNavigation(SLIDE_COUNT)
   const searchParams = useSearchParams()
   const to = searchParams.get('to')
-  const wheelLockRef = useRef(false)
-  const touchStartYRef = useRef<number | null>(null)
 
   useEffect(() => setReady(true), [])
 
@@ -34,79 +36,16 @@ export default function ProposalPage() {
     trackEvent('proposal_locale_change', { locale: l })
   }
 
-  async function downloadCv(location: string) {
-    trackEvent('cv_download', { location })
-    const res = await fetch('/api/cv-link')
-    if (!res.ok) return
-    const { url } = await res.json()
-    const a = document.createElement('a')
-    a.href = url
-    a.download = 'cv-luu-minh-duc.pdf'
-    document.body.appendChild(a)
-    a.click()
-    a.remove()
+  function downloadCv(location: string) {
+    trackEvent('cv_access_open', { location })
+    setCvOpen(true)
   }
 
-  const goTo = useCallback((index: number) => {
-    setActiveSlide(Math.min(SLIDE_COUNT - 1, Math.max(0, index)))
-  }, [])
-
-  useEffect(() => {
-    function onWheel(e: WheelEvent) {
-      if (wheelLockRef.current) return
-      if (Math.abs(e.deltaY) < 10) return
-      wheelLockRef.current = true
-      setActiveSlide((prev) => {
-        const next = e.deltaY > 0 ? prev + 1 : prev - 1
-        return Math.min(SLIDE_COUNT - 1, Math.max(0, next))
-      })
-      setTimeout(() => {
-        wheelLockRef.current = false
-      }, 700)
-    }
-    function onTouchStart(e: TouchEvent) {
-      touchStartYRef.current = e.touches[0].clientY
-    }
-    function onTouchEnd(e: TouchEvent) {
-      if (touchStartYRef.current === null || wheelLockRef.current) return
-      const deltaY = touchStartYRef.current - e.changedTouches[0].clientY
-      touchStartYRef.current = null
-      if (Math.abs(deltaY) < 50) return
-      wheelLockRef.current = true
-      setActiveSlide((prev) => {
-        const next = deltaY > 0 ? prev + 1 : prev - 1
-        return Math.min(SLIDE_COUNT - 1, Math.max(0, next))
-      })
-      setTimeout(() => {
-        wheelLockRef.current = false
-      }, 700)
-    }
-    function onKeyDown(e: KeyboardEvent) {
-      if (e.key !== 'ArrowDown' && e.key !== 'PageDown' && e.key !== 'ArrowUp' && e.key !== 'PageUp') return
-      e.preventDefault()
-      if (wheelLockRef.current) return
-      wheelLockRef.current = true
-      const delta = e.key === 'ArrowDown' || e.key === 'PageDown' ? 1 : -1
-      setActiveSlide((prev) => Math.min(SLIDE_COUNT - 1, Math.max(0, prev + delta)))
-      setTimeout(() => {
-        wheelLockRef.current = false
-      }, 700)
-    }
-    window.addEventListener('wheel', onWheel, { passive: true })
-    window.addEventListener('touchstart', onTouchStart, { passive: true })
-    window.addEventListener('touchend', onTouchEnd, { passive: true })
-    window.addEventListener('keydown', onKeyDown)
-    return () => {
-      window.removeEventListener('wheel', onWheel)
-      window.removeEventListener('touchstart', onTouchStart)
-      window.removeEventListener('touchend', onTouchEnd)
-      window.removeEventListener('keydown', onKeyDown)
-    }
-  }, [])
-
   return (
-    <div id="top" className="h-screen overflow-hidden text-fg">
+    <div id="top" className="h-svh overflow-hidden text-fg">
+      {cvOpen && <CvAccess locale={locale} onClose={() => setCvOpen(false)} />}
       <HeroScene progress={activeSlide / (SLIDE_COUNT - 1)} />
+      <StoryGuide activeSlide={activeSlide} locale={locale} onNavigate={goTo} />
       <ProposalHeader
         locale={locale}
         onLocaleChange={changeLocale}
@@ -118,8 +57,8 @@ export default function ProposalPage() {
 
       {/* Hero */}
       <Slide active={activeSlide === 0}>
-        <section className="relative h-full px-6 flex items-center hero-glow overflow-hidden">
-          <div className="relative z-10 max-w-4xl mx-auto w-full">
+        <section className="relative min-h-full px-6 py-6 flex items-center hero-glow overflow-hidden">
+          <div className="hero-story-content relative z-10 max-w-4xl mx-auto w-full">
             <p className="font-mono text-sm text-teal mb-3 legible-on-photo">{t.hero.cmd}</p>
             <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-fg leading-[1.1] legible-on-photo" style={{ fontFamily: 'var(--font-display)' }}>
               {t.hero.title1}
@@ -127,9 +66,9 @@ export default function ProposalPage() {
             <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-amber leading-[1.1] mb-4 legible-on-photo" style={{ fontFamily: 'var(--font-display)' }}>
               {t.hero.title2}
             </h1>
-            <p className="text-white text-base max-w-2xl leading-relaxed mb-5 legible-on-photo">{t.hero.subtitle}</p>
+            <p className="text-white text-base max-w-2xl leading-relaxed mb-5 legible-on-photo">{locale === 'vi' ? 'Tôi là Đức. Đi cùng tôi từ những dòng code đầu tiên đến sản phẩm thực tế — qua những bài toán, dự án và cách tôi nhận trách nhiệm với điều mình xây dựng.' : "I'm Duc. Walk with me from code to real products — through the challenges, the builds, and how I take ownership of what I ship."}</p>
 
-            <div className="flex flex-wrap items-center gap-3 mb-5 font-mono text-xs text-fg-dim">
+            <div className="hero-credentials flex flex-wrap items-center gap-3 mb-5 font-mono text-xs">
               <span>★ <span className="text-amber">4.9–5.0</span> · 3,000+ merchant reviews</span>
               <span className="text-border">|</span>
               <span>2 Shopify apps <span className="text-teal">live</span> on the App Store</span>
@@ -137,23 +76,23 @@ export default function ProposalPage() {
               <span>2 full-stack products shipped to production</span>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
+            <div className="hero-story-fields grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
               <Field label={t.hero.fields.name} value={t.hero.fields.nameValue} />
               <Field label={t.hero.fields.role} value={t.hero.fields.roleValue} />
               <Field label={t.hero.fields.experience} value={t.hero.fields.experienceValue} />
               <Field label={t.hero.fields.to} value={to || t.hero.fields.toDefault} highlight={!!to} />
             </div>
 
-            <div className="flex flex-wrap gap-3">
+            <div className="hero-story-actions flex flex-wrap gap-3">
               <button
                 type="button"
                 onClick={() => {
-                  trackEvent('proposal_cta_click', { target: 'contact' })
-                  goTo(7)
+                  trackEvent('proposal_cta_click', { target: 'journey' })
+                  goTo(1)
                 }}
                 className="inline-flex items-center gap-2 px-5 py-2.5 bg-amber text-bg font-mono text-sm font-medium rounded-md hover:bg-amber/90 transition-colors"
               >
-                {t.hero.ctaContact}
+                {locale === 'vi' ? 'bắt đầu hành trình →' : 'start the journey →'}
               </button>
               <button
                 type="button"
@@ -248,56 +187,7 @@ export default function ProposalPage() {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-3">
-            {t.s6.projects.map((p, i) => (
-              <div key={p.name} className="group rounded-lg border border-border bg-bg overflow-hidden transition-colors hover:border-teal/50">
-                <div className="flex gap-3 p-3">
-                  <div className="relative w-24 aspect-video shrink-0 bg-bg-raised border border-border rounded overflow-hidden">
-                    <Image
-                      src={i === 0 ? '/projects/retrotrade.png' : '/projects/nutigo.png'}
-                      alt={`${p.name} preview`}
-                      fill
-                      className="object-cover object-top transition-transform duration-300 group-hover:scale-105"
-                      sizes="96px"
-                    />
-                  </div>
-                  <div className="space-y-1 min-w-0">
-                    <div className="flex items-baseline justify-between gap-2">
-                      <p className="font-bold text-fg text-sm" style={{ fontFamily: 'var(--font-display)' }}>{p.name}</p>
-                      <span className="font-mono text-[10px] text-fg-dim shrink-0">{p.period}</span>
-                    </div>
-                    <p className="font-mono text-[11px] text-teal">{p.role}</p>
-                    <p className="text-fg-muted text-xs leading-snug line-clamp-2">{p.body}</p>
-                  </div>
-                </div>
-                <div className="px-3 pb-3 space-y-1.5">
-                  <div className="flex flex-wrap gap-1">
-                    {p.stack.map((s) => <span key={s} className="px-1.5 py-0.5 text-[10px] font-mono text-fg-muted bg-bg-raised border border-border rounded">{s}</span>)}
-                  </div>
-                  <div className="flex gap-3 font-mono text-xs">
-                    <a
-                      href={PROJECTS[i].links[0].href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={() => trackEvent('project_link_click', { project: p.name, type: 'live', location: 'proposal' })}
-                      className="text-fg hover:text-amber transition-colors"
-                    >
-                      [live]
-                    </a>
-                    <a
-                      href={PROJECTS[i].links[1].href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={() => trackEvent('project_link_click', { project: p.name, type: 'github', location: 'proposal' })}
-                      className="text-fg hover:text-amber transition-colors"
-                    >
-                      [github]
-                    </a>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+          <ProjectShowcase locale={locale} />
         </Section>
       </Slide>
 
@@ -426,10 +316,11 @@ export default function ProposalPage() {
 function Slide({ active, children }: { active: boolean; children: React.ReactNode }) {
   return (
     <div
-      className={`absolute inset-0 top-0 transition-opacity duration-500 ${active ? 'opacity-100 z-10' : 'opacity-0 pointer-events-none z-0'}`}
+      className={`slide-panel absolute inset-0 ${active ? 'is-active z-10' : 'pointer-events-none z-0'}`}
+      inert={!active}
       aria-hidden={!active}
     >
-      <div className="h-screen pt-14 overflow-y-auto">{children}</div>
+      <div data-active={active} className="slide-scroll h-svh pt-14 overflow-y-auto">{children}</div>
     </div>
   )
 }

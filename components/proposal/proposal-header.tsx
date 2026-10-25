@@ -38,13 +38,14 @@ export default function ProposalHeader({
             <span className="text-fg">{navLabel}</span>
           </button>
 
-          <nav className="flex items-center gap-0.5 overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
+          <nav aria-label={locale === 'vi' ? 'Các mục hồ sơ' : 'Portfolio sections'} className="flex items-center gap-0.5 overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
             {SECTIONS.map((id, i) => (
               <button
                 key={id}
                 type="button"
                 onClick={() => onNavigate(i + 1)}
                 title={navTitles[i]}
+                aria-current={activeSlide === i + 1 ? 'step' : undefined}
                 className={`px-2.5 py-1.5 font-mono text-xs rounded-md whitespace-nowrap transition-colors ${
                   activeSlide === i + 1 ? 'text-amber bg-bg-raised' : 'text-fg-dim hover:text-amber hover:bg-bg-raised'
                 }`}
@@ -57,12 +58,14 @@ export default function ProposalHeader({
           <div className="flex items-center gap-1 font-mono text-xs shrink-0">
             <button
               onClick={() => onLocaleChange('vi')}
+              aria-pressed={locale === 'vi'}
               className={`px-2.5 py-1.5 rounded-md transition-colors ${locale === 'vi' ? 'bg-amber text-bg' : 'text-fg-dim hover:text-fg'}`}
             >
               VI
             </button>
             <button
               onClick={() => onLocaleChange('en')}
+              aria-pressed={locale === 'en'}
               className={`px-2.5 py-1.5 rounded-md transition-colors ${locale === 'en' ? 'bg-amber text-bg' : 'text-fg-dim hover:text-fg'}`}
             >
               EN
