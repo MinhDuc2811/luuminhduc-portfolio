@@ -1,24 +1,31 @@
-import { readFile } from 'fs/promises'
-import path from 'path'
+import { readFile } from 'node:fs/promises'
+import path from 'node:path'
 import { NextRequest, NextResponse } from 'next/server'
-import { verifyCvToken } from '@/lib/cv-token'
+import { CV_COOKIE, verifyCvToken } from '@/lib/cv-token'
+import { decryptCv } from '@/lib/cv-file'
 
-const CV_PATH = path.join(process.cwd(), 'private-assets', 'cv-luu-minh-duc.pdf')
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+const headers = {
+  'Cache-Control': 'private, no-store, max-age=0',
+  'X-Robots-Tag': 'noindex, nofollow, noarchive',
+  'X-Content-Type-Options': 'nosniff',
+  'Referrer-Policy': 'no-referrer',
+  Vary: 'Cookie',
+}
 
 export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url)
-  const ok = verifyCvToken(searchParams.get('expiry'), searchParams.get('sig'))
-  if (!ok) {
-    return NextResponse.json({ error: 'Link expired or invalid' }, { status: 403 })
+  if (!verifyCvToken(req.cookies.get(CV_COOKIE)?.value)) {
+    return NextResponse.json({ error: 'Access required or session expired' }, { status: 403, headers })
   }
-
-  const file = await readFile(CV_PATH)
-  return new NextResponse(file, {
-    headers: {
-      'Content-Type': 'application/pdf',
-      'Content-Disposition': 'inline; filename="cv-luu-minh-duc.pdf"',
-      'Cache-Control': 'no-store',
-      'X-Robots-Tag': 'noindex, nofollow',
-    },
-  })
+  try {
+    const encrypted = await readFile(path.join(process.cwd(), 'private-assets', 'cv-luu-minh-duc.pdf.enc'))
+    const file = decryptCv(encrypted, process.env.CV_ENCRYPTION_KEY!)
+    return new NextResponse(new Uint8Array(file), {
+      headers: { ...headers, 'Content-Type': 'application/pdf',
+        'Content-Disposition': 'attachment; filename="cv-luu-minh-duc.pdf"' },
+    })
+  } catch {
+    return NextResponse.json({ error: 'CV is temporarily unavailable' }, { status: 503, headers })
+  }
 }
