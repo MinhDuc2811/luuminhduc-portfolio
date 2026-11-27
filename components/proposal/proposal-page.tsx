@@ -125,13 +125,23 @@ export default function ProposalPage() {
                 <h3 className="text-xl font-bold text-fg" style={{ fontFamily: 'var(--font-display)' }}>{t.s1.name}</h3>
                 <p className="font-mono text-xs text-teal">{t.s1.tagline}</p>
               </div>
-              <p className="text-fg-muted text-sm leading-snug">{t.s1.bio1}</p>
-              <p className="text-fg-muted text-sm leading-snug">{t.s1.bio2}</p>
-              <div className="flex flex-wrap gap-1.5">
-                {t.s1.traits.map((tr) => (
-                  <span key={tr} className="px-2 py-1 text-[11px] font-mono text-fg-muted bg-bg-raised border border-border rounded-md">{tr}</span>
-                ))}
-              </div>
+              {[t.s1.currentWork, t.s1.priorWork].map((work) => (
+                <div key={work.company} className="border-t border-border pt-2">
+                  <h4 className="text-sm font-bold text-fg">{work.company}</h4>
+                  {'project' in work && (
+                    <>
+                      <p className="text-sm text-fg-muted">{work.project}</p>
+                      <p className="mt-1 font-mono text-xs text-teal">{work.stack}</p>
+                    </>
+                  )}
+                  <ul className="mt-1 list-disc space-y-1 pl-5 text-sm leading-snug text-fg-muted">
+                    {work.contributions.map((contribution) => (
+                      <li key={contribution}>{contribution}</li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+              <p className="border-t border-border pt-2 text-sm leading-snug text-fg-muted">{t.s1.earlierWork}</p>
             </div>
           </div>
 
